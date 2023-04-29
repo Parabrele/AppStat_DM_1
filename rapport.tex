@@ -1,5 +1,8 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
+\usepackage{geometry}
+
+\newgeometry{vmargin={30mm}, hmargin={30mm,30mm}}   % set the margins
 
 \title{Rapport DM 1}
 \author{Grégoire DHIMOÏLA}
@@ -54,7 +57,7 @@ This was to be expected as the GD gives a much more accurate direction for the g
 The figures below show the evolution of the loss and the accuracy over time for the different batch sizes.
 See figure 1/2 for GD and SGD loss over gradient step. The final accuracy was 0.95 and 0.89 respectively.
 
-The SGD produced images slightly noisier and the accuracy was much lower for the same amount of gradient steps (figures 3/4)\newline
+The SGD produced images slightly noisier and the accuracy was much lower for the same amount of gradient steps (figures 3/4). Those images are really beautiful as they perfectly represent the expected result, with a clear positive A superposed to a clear neagative B/C, and neutral values on the intersection.\newline
 
 We can see that when the prediction is kept as a real number, the model look like noise and performs slightly less than with a discrete predictions, where we take only the sign of the prediction (accuracy 0.95 vs 0.9).
 This is coherent with the second hypothesis mentioned earlier, the model seems to concentrate on a few pixels and ignore the rest.
@@ -88,12 +91,12 @@ To test the result, we compute the accuracy of the model on the test set.
 
 The results are in the results/knn folder (or figure 8) and are synthesised here.
 
-The accuracy of the model stays arround 0.95 for k between 1 and 10. There is no clear tendency however in this range.
+The accuracy of the model stays arround 0.95 for k between 1 and 10. There is no clear tendency however in this range. As k increases, the error seems to increase too, wich is not verry suprising as, as already said, we are doing pixel-wise comparison, so allowing for more images, even if they are "close" also increases potential noise and confusion.
 
 \subsection{}
 
 The $K-folder$ cross validation is a method to estimate the performance of a model on a dataset. It consists in splitting the dataset in K parts, and for each part, train the model on the other parts and test it on the current part. Then, the performance is estimated as the average of the performance on each part.
-In this case, it gives a best k of 6.
+In this case, it gives a best k of 3with a test accuracy of 0.94.
 
 \subsection{Bonus : $K-means++$}
 
@@ -107,6 +110,15 @@ For k = 10, the performance is much more satisfying, but it is still not as good
 It appears that the slight variations (in thickness or angle for example) found in the letters of the k=10 model are really important and explain why the k=2,3 models perform so badly. Indeed, the comparision between images is done pixel wise and thus is extremely not robust to small transformations of the images.
 
 The difference in performance with knn is explained by the fact that knn is essentially a boosted version of K-means, where K = n. So it was to be expected that there would be a slight decrease in performance with regard to the knn model. However, the accuracy was still very impressive and could justify the abysal gain in computation.
+
+\section{Question 5}
+
+$$\begin{array}{|c|c|c|c|c|}
+    \hline & \text { Logistic\ regression } & \text { Linear\ regression } & \text { K-NN } & \text { K-means }\\
+    \hline \text { Empirical\ error\ (0-1\ loss) } & 0.096 & 0.026 & 0.18 & 0.091 \\
+    \hline \text { Test error\ (0-1\ loss)} & 0.091 & 0.081 & 0.051 & 0.096 \\
+    \hline
+    \end{array}$$
 
 \section{Figures}
 
@@ -154,7 +166,7 @@ The difference in performance with knn is explained by the fact that knn is esse
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.8\textwidth]{knn_errors.png}
+\includegraphics[width=0.8\textwidth]{knn_errors_1_100.png}
 \caption{KNN errors}
 \end{figure}
 

@@ -57,9 +57,9 @@ def knn(k, train_data, train_labels, test_data, test_labels):
 
     return error
 
-k_errors = torch.zeros(10)
-ks = torch.arange(1, 11)
-for k in range(1, 11):
+k_errors = torch.zeros(100)
+ks = torch.arange(1, 101)
+for k in range(1, 101):
     err = knn(k, train_data, train_labels, test_data, test_labels)
     print('k =', k, ':', err)
     k_errors[k - 1] = err
@@ -88,8 +88,8 @@ def K_fold_cross_validation(K, train_data, train_labels, test_data, test_labels)
     folds_labels = torch.split(shuffled_train_labels, 6000 // K)
 
     #now, for each fold, train the model on the other folds and test it on the current fold
-    k_list = torch.arange(1, 11)
-    errors = torch.zeros(K, 10)
+    k_list = torch.arange(1, 101)
+    errors = torch.zeros(K, 100)
     for i in range(K):
         #first, we concatenate all the folds except the current one
         train_data = torch.cat(folds[:i] + folds[i + 1:])
@@ -100,7 +100,7 @@ def K_fold_cross_validation(K, train_data, train_labels, test_data, test_labels)
         test_labels = folds_labels[i]
 
         #compute the error
-        for k in range(1, 11):
+        for k in k_list:
             errors[i, k - 1] = knn(k, train_data, train_labels, test_data, test_labels)
 
     #finally, we average the errors on the K folds and return the best k
@@ -111,6 +111,13 @@ def K_fold_cross_validation(K, train_data, train_labels, test_data, test_labels)
 
 best_k = K_fold_cross_validation(5, train_data, train_labels, test_data, test_labels)
 print('\nbest k :', best_k)
+
+#compute the training and test errors for the best k
+test_error = knn(best_k, train_data, train_labels, test_data, test_labels)
+train_error = knn(best_k, train_data, train_labels, train_data, train_labels)
+
+print('empirical error :', train_error)
+print('test error :', test_error)
 
 
 def kmeans(k, train_data, train_labels, test_data, test_labels):
@@ -210,6 +217,10 @@ for i in tqdm(range(10)):
 
     train_errors[i] = 1 - train_accuracy
     test_errors[i] = 1 - test_accuracy
+
+#print the training and test errors
+print('training errors :', train_errors)
+print('test errors :', test_errors)
 
 plt.plot(k_values, train_errors, label = 'Training error')
 plt.plot(k_values, test_errors, label = 'Test error')

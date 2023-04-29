@@ -178,6 +178,10 @@ class Question_3():
             loss_function = lin_loss
         
         self.beta, self.training_loss, self.training_accuracy, self.test_loss, self.test_accuracy, self.x_trainings, self.x_tests, self.averages = train(model, loss_function, lr, batch_size, epochs)
+        
+        print("empirical error : ", 1 - self.training_accuracy[-1])
+        print("test error : ", 1 - self.test_accuracy[-1])
+        
         print("Done.")
 
     def a(self):
