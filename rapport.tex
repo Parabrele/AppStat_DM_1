@@ -55,6 +55,7 @@ Comments on the code and results :\newline
 
 All the results can be found in the results/GD file. The most interesting ones are synthesised here.
 
+First, we can remark that very high learning rates are possible here, even a rate of 1 seems to be fine (for the logist loss, at least). I yet decided to stick with a rate of 1e-3 to be able to better see the evolution of the problem and of the learning.
 Due to the shear number of computations, the models could be trained on a CPU (arround 1-2 minutes for a GD with 10000 epochs), but I decided to accelerate this by using the GPU, which is much faster (arround 10 seconds for the same experiment). To do this, I used pytorch tensor instead of numpy arrays.
 
 For the same amount of gradient steps, the model performs better with a bigger batch size, and takes only a little bit more time to train. This is thanks to the GPU acceleration of the torch engine.
