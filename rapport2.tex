@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{geometry}
+\usepackage{amsmath}
+\newcommand{\pr}{\mathbb{P}}
+
+\newgeometry{vmargin={30mm}, hmargin={30mm,30mm}}   % set the margins
+
+\title{Rapport DM 1}
+\author{Grégoire DHIMOÏLA}
+\date{April 2023}
+
+\begin{document}
+
+\maketitle
+
+%abstract
+\begin{abstract}
+    This document contains the report for the second homework of the Machine Learning course. It contains the answers to the questions and links to the code used to answer them. It also contains the main results of the experiments.
+\end{abstract}
+
+\section{Question 1}
+
+\subsection{}
+It is important to regularize as it helps prevent overfitting and stupidly high weights which would be bad for generalization. It also helps to prevent the model to fit the noise.
+
+\subsection{} /
+
+\subsection{}
+
+The best value for $\lambda$ would be before the capabilities start to degrade, and after the model norm started to shrink.
+
+To tune it we can focus on the useful range of lambda and make a K-fold cross validation.
+
+After making that, we find $\lambda = 0.1$ for the L1 regularization, and $\lambda = 5$ for L2.
+
+\subsection{}
+
+The model is plotted for 4 values of lambda : before having any influence, when it is optimal, when the norm is lowest (and capabilities are extremely poor) and when it just diverged.
+
+ As expected, with weak lambda, the model is close to the linear regression model.
+As lambda increases, the model becomes more and more sparse. When lambda is optimal, we can clearly see bits of the images that are the most important for the classification, all the rest being set to 0.
+When lambda is too high, the model is too sparse and the accuracy decreases. Eventually, the model just diverges and becomes noise.
+
+At optimality, the L1 regularisation was the strongest in setting as many coefficients as possible to 0. The L2 regularisation was more gentle and simply sort of smoothed out the image, which should be more desirable in a real world application.
+
+I believe when lambda is too high, the learning rate is not small enough and the gradient steps make the model diverge, which is why we see noise at some point.
+
+
+
+
+\section{Question 2}
+
+\subsection{}
+
+Let $\pi = \mathbb{P}(Y = 1)$.
+
+En utilisant la formule de Bayes et avec $\pi=\pr(Y=1)$ :
+\begin{align*}
+\pr(Y=1|X) &= \frac{\pr(X|Y=1)\pi}{\pr(X)}\\
+&= \frac{\pr(X|Y=1)\pi}{\pr(X|Y=1)\pi + \pr(X|Y=-1)(1-\pi)}\\
+&= \frac 1 {1+\frac{\pr(X|Y=-1)}{\pr(X|Y=1)}\frac{1-\pi}{\pi}}\\
+\end{align*}
+Or on a :
+\begin{align*}
+\log\bigg(\frac{\pr(X|Y=1)}{\pr(X|Y=-1)}\bigg) &= \frac 1 2 \big((X-\mu_1)^T\Sigma^{-1}(X-\mu_1) - (X-\mu_{-1})^T\Sigma^{-1}(X-\mu_{-1}) \big)\\
+&= \frac 1 2 \big( X^T\Sigma^{-1}(\mu_{-1}-\mu_{1}) - \mu_1^T\Sigma^{-1}(X-\mu_1) + \mu_{-1}^T\Sigma^{-1}(X-\mu_{-1})\big)\\
+&= \frac 1 2 \big(X^T\Sigma^{-1}(\mu_{-1} - \mu_1) + (\mu_{-1} - \mu_1)^T\Sigma^{-1}X + \mu_1^T\Sigma^{-1}\mu_1 - \mu_{-1}^T\Sigma^{-1}\mu_{-1}\big)\\
+\end{align*}
+
+On utilise le fait que $X^T\Sigma^{-1}(\mu_{-1} - \mu_1)$ est égal à sa transposé (car c'est un scalaire):
+\begin{align*}
+    &= \frac 1 2 \big(-\langle\alpha_1, X \rangle - \alpha_0\big)
+\end{align*}
+Avec:
+\begin{align*}
+    \alpha_1 &= (\Sigma^{-1} + {\Sigma^{-1}}^T)(\mu_{1} - \mu_{-1})\\
+    \alpha_0 &= \mu_1^T\Sigma^{-1}\mu_1 - \mu_{-1}^T\Sigma^{-1}\mu_{-1}\\
+\end{align*}
+On obtient finalement :
+\begin{align*}
+\pr(Y=1|X) &= \frac{\pr(X|Y=1)\pi}{\pr(X)}\\
+&= \frac 1 {1 + \exp\big(-\beta_0 - \langle\beta_1, X\rangle \big)}\\
+\end{align*}
+Avec :
+\begin{align*}
+\beta_0 &= \log\big(\frac\pi{1-\pi}\big) + \alpha_0/2 \\
+\beta_1 &= \alpha_1/2
+\end{align*}
+
+\subsection{}
+
+I love latex, but no, I'm not going to code it. This is just an adaptation of the proof in the example in dimention one of the Probabilistic Model class.
+
+\subsection{}
+
+Everything worked fine and then I tried adding a $\lambda_0$... which broke everything and made the results unstable. The $\lambda_0$ is still there, but set to 0. You can try a non zero value to see what it does.
+
+It can be seen as some sorte of regularization as it forces the covariance matrix to be somewhat close to a certain shape (diagonal).
+
+\subsection{}
+
+A false positive/negative is when the model is wrongly predicting a positive/negative result, where it should be the opposite. The confusion matrix is not really interesting, there just seems to be a slight preference towards the -1 labels.
+
+\section{Question 3}
+
+I implemented the $K-means++$ algorithm. The PCA illustrates what we already said in this homework and the previous one : The A and C are clearly separable, but the B do not form a clear cluster and overlap with A and C. We can see it in the figure where points are colored by letter : the B are really spread out everywhere. The confusion matrix only reinforces this point, B is often confused with C and vis versa, as well as A, but A and C are never confused for the other.
+
+A graphical explanation would be that B has both a large bar in the middle that is present in A, and a large bar/curve on the left that overlaps a lot with the curve of C.
+
+\end{document}
